@@ -1,0 +1,113 @@
+extends layout
+
+block content
+	-
+		stuff = {
+			replacer: function(match, pIndent, pKey, pVal, pEnd) {
+				var key = '<span class=json-key>';
+				var val = '<span class=json-value>';
+				var str = '<span class=json-string>';
+				var r = pIndent || '';
+				if (pKey) {
+					r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+				}
+				if (pVal) {
+					r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+				}
+				return r + (pEnd || '');
+			},
+			prettyPrint: function(obj) {
+				if (obj) {
+					var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+					return JSON.stringify(obj, null, 3)
+						.replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+						.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+						.replace(jsonLine, stuff.replacer);
+				}
+				else {
+					return '';
+				}
+			}
+		};
+	h1 Errors List
+	ul(class='error-list')
+		each error in errors
+			li(class='error') 
+				- var lines = error.stack.split(')');
+				div(class='error-title')
+					button(class='del-btn', data-id=error.id) Delete
+					p(class='error-message') #{error.message} on #{error.date}
+					p #{lines[0] + ')'}
+				div(class='error-infos')
+					div.btns
+						div(class='go-stack') Stack
+						div(class='go-events') Events
+					div(class='stack visible')
+						h2 Full stack
+						ul
+							each line in lines
+								li= line + ')'
+					div(class='events')
+						h2 Events
+						div(class='replay', data-id=error.id) Replay
+						ul
+							each event in error.events
+								li
+									- var param = stuff.prettyPrint(event.params)
+									div(class='path')
+										p #{event.path}
+										pre(class='params').
+											!{param}
+
+	script.
+		var li = document.querySelectorAll('.error');
+		Array.prototype.forEach.call(li, function(error) {
+			var title = error.querySelector('.error-title');
+			title.addEventListener('click', function() {
+				var info = error.querySelector('.error-infos');
+				info.classList.toggle('visible');
+			});
+
+			var stackBtn = error.querySelector('.go-stack');
+			stackBtn.addEventListener('click', function() {
+				var stackTab = error.querySelector('.stack');
+				stackTab.classList.add('visible');
+				var eventsTab = error.querySelector('.events');
+				eventsTab.classList.remove('visible');
+			});
+
+			var eventsBtn = error.querySelector('.go-events');
+			eventsBtn.addEventListener('click', function() {
+				var stackTab = error.querySelector('.stack');
+				stackTab.classList.remove('visible');
+				var eventsTab = error.querySelector('.events');
+				eventsTab.classList.add('visible');
+			});
+
+			var deleteBtns = error.querySelectorAll('.del-btn');
+			Array.prototype.forEach.call(deleteBtns, function(btn) {
+				btn.addEventListener('click', function() {
+					fetch('/errors/' + btn.getAttribute('data-id'), {
+						method: 'DELETE',
+					}).then(function() {
+						error.parentNode.removeChild(error)
+					});
+				});
+		});
+		});
+
+		var paths = document.querySelectorAll('.path');
+		Array.prototype.forEach.call(paths, function(path) {
+			path.addEventListener('click', function() {
+				var params = path.querySelector('.params');
+				params.classList.toggle('visible');
+			});
+		});
+
+		var replays = document.querySelectorAll('.replay');
+		Array.prototype.forEach.call(replays, function(replay) {
+			replay.addEventListener('click', function() {
+				window.open('http://localhost:9000/#/replay/' + replay.getAttribute('data-id'));
+			});
+		});
+

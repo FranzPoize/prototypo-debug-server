@@ -1,0 +1,127 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+pre {
+	background-color: ghostwhite;
+}
+
+.json-key {
+	color: brown;
+}
+
+.json-value {
+	color: navy;
+}
+
+.json-string {
+	color: olive;
+}
+
+.error-infos {
+	display:none;
+}
+
+.error-infos.visible {
+	display:block;
+}
+
+ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+ul.error-list {
+	border-bottom: solid 1px navy;
+}
+
+.btns {
+	display:flex;
+}
+
+.btns > div {
+	background-color: gold;
+	padding:10px;
+	margin-left:20px;
+	cursor:pointer;
+	border-radius:3px;
+	color:white;
+}
+
+.btns > div:hover {
+	background-color: goldenrod;
+}
+
+.error {
+	border:solid 1px navy;
+	border-bottom:none;
+}
+
+.error-title {
+	cursor:pointer;
+}
+
+.error-title > p {
+	font-size: 21px;
+	margin:0;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:30px;
+}
+
+.error-title > button {
+	float:right;
+	margin:10px;
+}
+
+.error-message {
+	padding-top:10px;
+	background-color: lightblue;
+}
+
+.stack {
+	display:none;
+	margin-left:20px;
+}
+
+.stack.visible {
+	display:block;
+}
+
+.events {
+	display:none;
+	margin-left:20px;
+}
+
+.events.visible {
+	display:block;
+}
+
+.params {
+	display:none;
+	font-size:12px;
+}
+
+.params.visible {
+	display:block;
+}
+
+.path {
+	font-size:18px;
+	background-color:lightgrey;
+	padding:5px;
+	margin-bottom:5px;
+	margin-right:20px;
+	border-radius:3px;
+}
+
+.path > p {
+	padding:0;
+	margin:0;
+}
