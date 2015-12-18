@@ -7,13 +7,14 @@ const error = mongoose.model('Error');
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
-	const {message, stack, events, date} = req.body;
+	const {message, stack, events, date, values} = req.body;
 
 	const newError = new error({
 		message,
 		stack,
 		events,
 		date,
+		values,
 	});
 
 	console.log('error created');
@@ -23,7 +24,11 @@ router.post('/', (req, res, next) => {
 			res.send(err);
 		}
 
-		fs.writeFile(`public/events-logs/${savedError.id}.json`, JSON.stringify(savedError.events), (err) => {
+		fs.writeFile(`public/events-logs/${savedError.id}.json`,
+					 JSON.stringify({
+						 events:savedError.events,
+						 values:savedError.values
+					 }), (err) => {
 			if (err) {
 				return console.log(err);
 			}

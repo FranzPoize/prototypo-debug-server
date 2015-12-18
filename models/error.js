@@ -5,6 +5,7 @@ const errorSchema = new mongoose.Schema({
 	stack: String,
 	events: Array,
 	date: Date,
+	values: mongoose.Schema.Types.Mixed,
 }, {
 	collection: 'errors'
 });
